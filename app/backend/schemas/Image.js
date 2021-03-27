@@ -2,8 +2,10 @@ const mongoose = require('mongoose')
 
 let Image = new mongoose.Schema({
     url: String,
+    index: Number,
     description: String,
-    width: Number
+    width: Number,
+    articleId: String
 })
 
-module.exports = mongoose.model('Image', Image)
+module.exports = Image
