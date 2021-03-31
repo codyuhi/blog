@@ -1,30 +1,36 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const multer = require('multer')
 
 const Image = mongoose.model('Image', require('../schemas/Image'))
 const Article = mongoose.model('Article', require('../schemas/Article'))
 
-// create an image
-router.post('/:articleId', async (req, res) => {
-    if (!req.params.articleId || req.params.articleId.length != 24) {
-        res.status(400)
-        res.send({
-            success: false,
-            data: {
-                message: 'Invalid Article ID provided'
-            }
-        })
-        return
+const allowCors = require('../middleware/CORS.js').allowCors
+
+const upload = multer({
+    dest: '../frontend/public/images/user_images/',
+    limits: {
+        fileSize: 10000000
     }
-    try {
-        const image = new Image({
-            url: req.body.url,
-            index: req.body.index,
-            description: req.body.description,
-            width: req.body.width,
-            articleId: req.params.articleId
+})
+
+// upload image
+router.post('/:articleId', allowCors, upload.single('photo'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).send({
+            message: 'Must upload a file'
         })
+    }
+    const image = new Image({
+        url: req.body.url,
+        title: req.body.title,
+        index: req.body.index,
+        description: req.body.description,
+        width: req.body.width,
+        articleId: req.params.articleId
+    })
+    try {
         let article = await Article.findOne({ _id: req.params.articleId })
         article.images.push(image)
         await article.save()
