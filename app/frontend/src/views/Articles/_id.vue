@@ -198,6 +198,10 @@ export default {
           "/api/images/" + this.article._id,
           formData
         );
+        if (response.status === 413) {
+          alert("Image file size too large! Please try a smaller image file.");
+          return;
+        }
         if (!response.data.success) {
           this.error = "Error: " + response.data.data.message;
         } else {
@@ -330,7 +334,7 @@ input[type="file"] {
 }
 
 .paragraph > textarea {
-    margin: 30px;
+  margin: 30px;
 }
 
 .error-text {

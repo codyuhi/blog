@@ -127,6 +127,10 @@ export default {
         formData.append("images", []);
         formData.append("comments", []);
         const response = await axios.post("/api/articles", formData);
+        if (response.status === 413) {
+          alert("Image file size too large! Please try a smaller image file.");
+          return;
+        }
         if (!response.data.success) {
           this.error = "Error: " + response.data.data.message;
         } else {
