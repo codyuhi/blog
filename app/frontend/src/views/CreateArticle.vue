@@ -118,8 +118,10 @@ export default {
         this.error = null;
         const formData = new FormData();
         formData.append("photo", this.titleImage, this.titleImage.name);
-        formData.append("title", this.titleImageName);
-        formData.append("description", this.titleImageDescription);
+        formData.append("title", this.articleTitle);
+        formData.append("description", this.articleDescription);
+        formData.append("imageTitle", this.titleImageName);
+        formData.append("imageDescription", this.titleImageDescription);
         formData.append(
           "paragraphs",
           this.paragraphs ? JSON.stringify(this.paragraphs) : null
