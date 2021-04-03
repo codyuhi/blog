@@ -1,6 +1,10 @@
 <template>
   <div id="create-article">
-    <div id="create-form-container">
+    <div v-if="isLoading" class="loading-container column center">
+      <img src="/loading.gif" alt="Loading animation" />
+      <h2>Loading...</h2>
+    </div>
+    <div v-else id="create-form-container">
       <div class="form-title">
         <h2>Create Blog Article</h2>
         <p>Fill out the information below to create a new Blog Article</p>
@@ -115,6 +119,7 @@ export default {
         return;
       }
       try {
+        this.isLoading = true;
         this.error = null;
         const formData = new FormData();
         formData.append("photo", this.titleImage, this.titleImage.name);
@@ -140,7 +145,7 @@ export default {
         }
       } catch (err) {
         console.error(err);
-        if(err.response.status === 413) {
+        if (err.response.status === 413) {
           alert("Image file size too large! Please try a smaller image file.");
         }
         this.error = err.response.data.message;
