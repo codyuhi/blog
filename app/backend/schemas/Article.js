@@ -16,6 +16,10 @@ let Article = new mongoose.Schema({
     comments: [{
         type: Comment
     }],
+    created: {
+        type: Date,
+        default: Date.now,
+    }
 })
 
 module.exports = Article

@@ -23,7 +23,7 @@ router.post('/:articleId', allowCors, upload.single('photo'), async (req, res) =
         })
     }
     const image = new Image({
-        url: req.body.url,
+        url: '/images/user_images/' + req.file.filename,
         title: req.body.title,
         index: req.body.index,
         description: req.body.description,

@@ -4,7 +4,11 @@ let Comment = new mongoose.Schema({
     name: String,
     email: String,
     content: String,
-    articleId: String
+    articleId: String,
+    created: {
+        type: Date,
+        default: Date.now
+    }
 })
 
 module.exports = Comment

@@ -1,9 +1,9 @@
-const mongoose = require('mongoose')
-
-let Image = new mongoose.Schema({
+let Image = {
     url: String,
     description: String,
-    width: Number
-})
+    index: Number,
+    width: Number,
+    articleId: String
+}
 
-module.exports = mongoose.model('Image', Image)
+module.exports = Image

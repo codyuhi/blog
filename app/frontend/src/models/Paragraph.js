@@ -1,7 +1,7 @@
-const mongoose = require('mongoose')
+let Paragraph = {
+    index: Number,
+    content: String,
+    articleId: String,
+}
 
-let Paragraph = new mongoose.Schema({
-    index: Number
-})
-
-module.exports = mongoose.model('Paragraph', Paragraph)
+module.exports = Paragraph

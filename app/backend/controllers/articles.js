@@ -1,58 +1,85 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const multer = require('multer')
 
 const Article = mongoose.model('Article', require('../schemas/Article'))
 const Comment = mongoose.model('Comment', require('../schemas/Comment'))
 const Image = mongoose.model('Image', require('../schemas/Image'))
 const Paragraph = mongoose.model('Paragraph', require('../schemas/Paragraph'))
 
+const upload = multer({
+    dest: '../frontend/public/images/user_images/',
+    limits: {
+        fileSize: 10000000
+    }
+})
+
 // create an article
-router.post('/', async (req, res) => {
+router.post('/', upload.single('photo'), async (req, res) => {
+
     try {
         const articleId = mongoose.Types.ObjectId()
+        let imageUrl = null
+        if (req.file) {
+            imageUrl = '/images/user_images/' + req.file.filename
+            const titleImage = new Image({
+                url: imageUrl,
+                title: req.body.imageTitle,
+                index: 0,
+                description: req.body.imageDescription,
+                width: req.body.width,
+                articleId: articleId
+            })
+            await titleImage.save()
+        }
         let paragraphs = []
-        req.body.paragraphs.forEach(async (paragraph) => {
-            paragraph['articleId'] = articleId
-            const p = new Paragraph({
-                index: paragraph.index,
-                content: paragraph.content,
-                articleId: paragraph.articleId
+        if (req.body.paragraphs) {
+            JSON.parse(req.body.paragraphs).forEach(async (paragraph) => {
+                paragraph['articleId'] = articleId
+                const p = new Paragraph({
+                    index: paragraphs.length,
+                    content: paragraph,
+                    articleId: articleId
+                })
+                paragraphs.push(p)
+                await p.save()
             })
-            paragraphs.push(p)
-            await p.save()
-        })
+        }
         let images = []
-        req.body.images.forEach(async (image) => {
-            image['articleId'] = articleId
-            const i = new Image({
-                url: image.url,
-                index: image.index,
-                description: image.description,
-                width: image.width,
-                articleId: image.articleId
+        if (req.body.images) {
+            req.body.images.forEach(async (image) => {
+                image['articleId'] = articleId
+                const i = new Image({
+                    url: image.url,
+                    index: image.index,
+                    description: image.description,
+                    width: image.width,
+                    articleId: image.articleId
+                })
+                images.push(i)
+                await i.save()
             })
-            images.push(i)
-            await i.save()
-        })
+        }
         let comments = []
-        req.body.comments.forEach(async (comment) => {
-            comment['articleId'] = articleId
-            const c = new Comment({
-                name: comment.name,
-                email: comment.email,
-                content: comment.content,
-                articleId: comment.articleId
+        if (req.body.comments) {
+            req.body.comments.forEach(async (comment) => {
+                comment['articleId'] = articleId
+                const c = new Comment({
+                    name: comment.name,
+                    email: comment.email,
+                    content: comment.content,
+                    articleId: comment.articleId
+                })
+                comments.push(c)
+                await c.save()
             })
-            comments.push(c)
-            await c.save()
-        })
-        console.log('images', images)
+        }
         const article = new Article({
             _id: articleId,
             title: req.body.title,
             description: req.body.description,
-            headerImgUrl: req.body.headerImgUrl,
+            headerImgUrl: imageUrl,
             paragraphs: paragraphs,
             images: images,
             comments: comments
@@ -209,10 +236,10 @@ router.get('/:articleId/images', async (req, res) => {
 })
 
 // get all paragraphs by article id
-router.get('/:articleId/paragraphs', async(req, res) => {
+router.get('/:articleId/paragraphs', async (req, res) => {
     try {
-        let paragraphs = await Paragraph.find({articleId: req.params.articleId})
-        if(!paragraphs) {
+        let paragraphs = await Paragraph.find({ articleId: req.params.articleId })
+        if (!paragraphs) {
             res.status(404)
             res.send({
                 success: false,
