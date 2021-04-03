@@ -140,6 +140,9 @@ export default {
         }
       } catch (err) {
         console.error(err);
+        if(err.response.status === 413) {
+          alert("Image file size too large! Please try a smaller image file.");
+        }
         this.error = err.response.data.message;
       } finally {
         this.isLoading = false;
