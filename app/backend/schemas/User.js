@@ -8,7 +8,7 @@ let User = new mongoose.Schema({
     password: String,
 })
 
-User.pre('save', async (next) => {
+User.pre('save', async function (next)  {
     if (!this.isModified('password')) {
         return next()
     }
@@ -22,7 +22,7 @@ User.pre('save', async (next) => {
     }
 })
 
-User.methods.comparePassword = async (password) => {
+User.methods.comparePassword = async function (password) {
     try {
         const isMatch = await argon2.verify(this.password, password)
         return isMatch
@@ -31,7 +31,7 @@ User.methods.comparePassword = async (password) => {
     }
 }
 
-User.methods.toJSON = () => {
+User.methods.toJSON = function () {
     const obj = this.toObject()
     delete obj.password
     return obj

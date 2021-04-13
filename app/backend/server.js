@@ -6,6 +6,8 @@ const commentRouter = require('./controllers/comments')
 const imageRouter = require('./controllers/images')
 const paragraphRouter = require('./controllers/paragraphs')
 const userRouter = require('./controllers/users')
+const cookieParser = require('cookie-parser')
+const cookieSession = require('cookie-session')
 
 const app = express()
 
@@ -27,6 +29,17 @@ mongoose.connect('mongodb://localhost:27017/blog', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
+
+app.use(cookieParser())
+app.use(cookieSession({
+    name: 'session',
+    keys: [
+        'secretValue'
+    ],
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000
+    }
+}))
 
 app.use('/api/articles', articleRouter)
 app.use('/api/comments', commentRouter)
