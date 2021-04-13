@@ -5,6 +5,7 @@ const articleRouter = require('./controllers/articles')
 const commentRouter = require('./controllers/comments')
 const imageRouter = require('./controllers/images')
 const paragraphRouter = require('./controllers/paragraphs')
+const userRouter = require('./controllers/users')
 
 const app = express()
 
@@ -31,6 +32,7 @@ app.use('/api/articles', articleRouter)
 app.use('/api/comments', commentRouter)
 app.use('/api/images', imageRouter)
 app.use('/api/paragraphs', paragraphRouter)
+app.use('/api/users', userRouter)
 
 if (require.main === module) {
     const port = process.env.PORT || 3002
