@@ -5,8 +5,10 @@ const mongoose = require('mongoose')
 const Comment = mongoose.model('Comment', require('../schemas/Comment'))
 const Article = mongoose.model('Article', require('../schemas/Article'))
 
+const validUser = require('../middleware/validUserAdmin').validUser
+
 // create a comment
-router.post('/:articleId', async (req, res) => {
+router.post('/:articleId', validUser, async (req, res) => {
     if (!req.params.articleId || req.params.articleId.length !== 24) {
         res.status(400)
         res.send({
@@ -22,7 +24,8 @@ router.post('/:articleId', async (req, res) => {
             name: req.body.name,
             email: req.body.email,
             content: req.body.content,
-            articleId: req.params.articleId
+            articleId: req.params.articleId,
+            user: req.user
         })
         let article = await Article.findOne({ _id: req.params.articleId })
         article.comments.push(comment)
@@ -91,7 +94,7 @@ router.get('/:commentId', async (req, res) => {
 })
 
 // edit a comment
-router.put('/:commentId', async (req, res) => {
+router.put('/:commentId', validUser, async (req, res) => {
     if (!req.params.commentId || req.params.commentId.length !== 24) {
         res.status(400)
         res.send({
@@ -114,10 +117,21 @@ router.put('/:commentId', async (req, res) => {
             })
             return
         }
+        if (!comment.user.equals(req.user._id) && req.user.role !== 'admin') {
+            res.status(403)
+            res.send({
+                success: false,
+                data: {
+                    message: 'You do not have permission to edit this comment'
+                }
+            })
+            return
+        }
         comment.name = req.body.name
         comment.email = req.body.email
         comment.content = req.body.content
         comment.articleId = req.body.articleId
+        comment.user = req.user
         let article = await Article.findOne({ _id: req.body.articleId })
         let commentIndex = article.comments.findIndex((c) => { return c._id.toString() === req.params.commentId })
         if (commentIndex < 0) {
@@ -147,7 +161,7 @@ router.put('/:commentId', async (req, res) => {
 })
 
 // delete a comment
-router.delete('/:commentId', async (req, res) => {
+router.delete('/:commentId', validUser, async (req, res) => {
     if (!req.params.commentId || req.params.commentId.length !== 24) {
         res.status(400)
         res.send({
@@ -166,6 +180,16 @@ router.delete('/:commentId', async (req, res) => {
                 success: false,
                 data: {
                     message: 'Unable to find Comment with id: ' + req.params.commentId
+                }
+            })
+            return
+        }
+        if (!comment.user.equals(req.user._id) && req.user.role !== 'admin') {
+            res.status(403)
+            res.send({
+                success: false,
+                data: {
+                    message: 'You do not have permission to delete this comment'
                 }
             })
             return

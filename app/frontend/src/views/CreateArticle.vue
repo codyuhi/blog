@@ -95,6 +95,7 @@ export default {
   data() {
     return {
       error: undefined,
+      isLoading: false,
       articleTitle: undefined,
       titleImage: undefined,
       titleImageUrl: undefined,
@@ -168,6 +169,11 @@ export default {
     removeParagraph(index) {
       this.paragraphs.slice(index, 1);
     },
+  },
+  created() {
+    if (!this.$root.$data.user || this.$root.$data.user.role !== "admin") {
+      this.$router.push("/");
+    }
   },
 };
 </script>

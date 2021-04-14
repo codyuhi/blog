@@ -48,7 +48,7 @@ app.use('/api/paragraphs', paragraphRouter)
 app.use('/api/users', userRouter)
 
 if (require.main === module) {
-    const port = process.env.PORT || 3002
+    const port = process.env.PORT || 3003
     app.listen(port, () => {
         console.log(`Blog API Server listening on port ${port}`)
     })

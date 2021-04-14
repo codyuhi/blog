@@ -5,8 +5,10 @@ const mongoose = require('mongoose')
 const Paragraph = mongoose.model('Paragraph', require('../schemas/Paragraph'))
 const Article = mongoose.model('Article', require('../schemas/Article'))
 
+const checkAdmin = require('../middleware/validUserAdmin.js').checkAdmin
+
 // create a paragraph
-router.post('/:articleId', async (req, res) => {
+router.post('/:articleId', checkAdmin, async (req, res) => {
     if (!req.params.articleId || req.params.articleId.length != 24) {
         res.status(400)
         res.send({
@@ -90,7 +92,7 @@ router.get('/:paragraphId', async (req, res) => {
 })
 
 // edit a paragraph
-router.put('/:paragraphId', async (req, res) => {
+router.put('/:paragraphId', checkAdmin, async (req, res) => {
     if (!req.params.paragraphId || req.params.paragraphId.length !== 24) {
         res.status(400)
         res.send({
@@ -145,7 +147,7 @@ router.put('/:paragraphId', async (req, res) => {
 })
 
 // delete a paragraph
-router.delete('/:paragraphId', async (req, res) => {
+router.delete('/:paragraphId', checkAdmin, async (req, res) => {
     if (!req.params.paragraphId || req.params.paragraphId.length !== 24) {
         res.status(400)
         res.send({

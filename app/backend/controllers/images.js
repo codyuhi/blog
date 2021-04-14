@@ -7,6 +7,7 @@ const Image = mongoose.model('Image', require('../schemas/Image'))
 const Article = mongoose.model('Article', require('../schemas/Article'))
 
 const allowCors = require('../middleware/CORS.js').allowCors
+const checkAdmin = require('../middleware/validUserAdmin.js').checkAdmin
 
 const upload = multer({
     dest: '../frontend/public/images/user_images/',
@@ -16,7 +17,7 @@ const upload = multer({
 })
 
 // upload image
-router.post('/:articleId', allowCors, upload.single('photo'), async (req, res) => {
+router.post('/:articleId', checkAdmin, allowCors, upload.single('photo'), async (req, res) => {
     if (!req.file) {
         return res.status(400).send({
             message: 'Must upload a file'
@@ -98,7 +99,7 @@ router.get('/:imageId', async (req, res) => {
 })
 
 // edit an image
-router.put('/:imageId', async (req, res) => {
+router.put('/:imageId', checkAdmin, async (req, res) => {
     if (!req.params.imageId || req.params.imageId.length !== 24) {
         res.status(400)
         res.send({
@@ -155,7 +156,7 @@ router.put('/:imageId', async (req, res) => {
 })
 
 // delete an image
-router.delete('/:imageId', async (req, res) => {
+router.delete('/:imageId', checkAdmin, async (req, res) => {
     if (!req.params.imageId || req.params.imageId.length !== 24) {
         res.status(400)
         res.send({

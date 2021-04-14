@@ -6,9 +6,13 @@ let User = new mongoose.Schema({
     lastName: String,
     username: String,
     password: String,
+    role: {
+        type: String,
+        default: ''
+    }
 })
 
-User.pre('save', async function (next)  {
+User.pre('save', async function (next) {
     if (!this.isModified('password')) {
         return next()
     }

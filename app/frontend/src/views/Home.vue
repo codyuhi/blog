@@ -7,7 +7,7 @@
     </div>
     <div v-if="error" class="error column center">
       <h2>Unable to load Blog Articles</h2>
-      <p>Error: {{ error }}</p>
+      <p class="error-text">Error: {{ error }}</p>
     </div>
     <div v-else-if="isLoading" class="loading column center">
       <img src="/loading.gif" class="loading-img" alt="Loading animation" />
@@ -21,7 +21,7 @@
         class="column center"
       >
         <div class="article">
-          <router-link to="/" class="row end clickable-x-container">
+          <router-link to="/" class="row end clickable-x-container" v-if="isAdmin">
             <p @click="deleteArticle(article._id)" class="clickable-x">X</p>
           </router-link>
           <img
@@ -38,14 +38,14 @@
       <div v-if="articles.length === 0" class="column center">
         <div id="no-articles" class="column center">
           <h2>No Blog Articles Available</h2>
-          <p>
+          <p v-if="isAdmin">
             Please click the "Create New Article" button below to create an
             article
           </p>
         </div>
       </div>
     </div>
-    <div id="create-button-area-container" class="row center">
+    <div id="create-button-area-container" class="row center" v-if="isAdmin">
       <button id="create-button" @click="createProject">
         <i class="fa fa-pencil-square-o"></i> Create New Article
       </button>
@@ -83,7 +83,7 @@ export default {
         }
       } catch (err) {
         console.error(err);
-        this.error = err.response.data.message;
+        this.error = err.response.data.data.message;
       } finally {
         this.isLoading = false;
       }
@@ -98,7 +98,7 @@ export default {
         }
       } catch (err) {
         console.error(err);
-        this.error = err.data.message;
+        this.error = err.response.data.data.message;
       }
     },
     getShortDescription(description) {
@@ -119,6 +119,14 @@ export default {
       } else {
         return moment(date).format("d MMMM YYYY");
       }
+    },
+  },
+  computed: {
+    isAdmin() {
+      if (this.$root.$data.user && this.$root.$data.user.role === "admin") {
+        return true;
+      }
+      return false;
     },
   },
   created() {
@@ -195,5 +203,9 @@ a:hover > div > h2 {
 .clickable-x:hover {
   color: var(--bluebell);
   cursor: pointer;
+}
+
+.error-text {
+  color: lightsalmon;
 }
 </style>

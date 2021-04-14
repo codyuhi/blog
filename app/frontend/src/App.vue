@@ -1,14 +1,19 @@
 <template>
   <div id="app">
     <div id="nav-container" class="row">
-      <div id="branding" class="center">
+      <div class="center nav branding">
         <router-link to="/"
           ><i class="fa fa-code-fork"></i><span> UhiCode</span></router-link
         >
       </div>
-      <div id="nav" class="center">
+      <div class="center small-nav branding">
+        <router-link to="/"><i class="fa fa-code-fork"></i></router-link>
+      </div>
+      <div id="nav" class="center nav">
         <router-link to="/">Home</router-link> |
         <router-link to="/about">About</router-link> |
+        <router-link to="/user" v-if="user">User</router-link>
+        <span v-if="user">|</span>
         <p class="fake-router-link" v-if="user" @click="logout">
           <i class="fa fa-sign-out"></i> Logout
         </p>
@@ -16,9 +21,20 @@
           ><i class="fa fa-sign-in"></i> Login</router-link
         >
       </div>
-      <div id="small-nav" class="center">
+      <div id="small-nav" class="center small-nav">
         <router-link to="/"><i class="fa fa-home"></i></router-link> |
-        <router-link to="/about"><i class="fa fa-user"></i></router-link>
+        <router-link to="/about"><i class="fa fa-info-circle"></i></router-link>
+        |
+        <router-link to="/user" v-if="user"
+          ><i class="fa fa-user"></i
+        ></router-link>
+        <span v-if="user">|</span>
+        <p class="fake-router-link" v-if="user" @click="logout">
+          <i class="fa fa-sign-out"></i>
+        </p>
+        <router-link to="/login" v-else
+          ><i class="fa fa-sign-in"></i
+        ></router-link>
       </div>
     </div>
     <p v-if="error">{{ error }}</p>
@@ -32,6 +48,7 @@
         <a href="https://github.com/codyuhi/blog">Click Here</a> to view this
         website's code on GitHub
       </p>
+      <p>~10 hrs spent on Final Project</p>
       <icon-list color="bluebell"></icon-list>
       <p>&copy; Cody Uhi 2021</p>
     </div>
@@ -172,7 +189,7 @@ textarea {
   align-items: center;
 }
 
-#branding,
+.branding,
 #nav,
 #small-nav {
   padding: 30px;
@@ -192,11 +209,11 @@ a:hover {
   color: var(--middlebluegreen);
 }
 
-#nav {
+.nav {
   display: none;
 }
 
-#small-nav {
+.small-nav {
   display: flex;
 }
 
@@ -213,11 +230,11 @@ a:hover {
   color: var(--viridian);
 }
 
-#branding a {
+.branding a {
   color: var(--viridian);
 }
 
-#branding a:hover,
+.branding a:hover,
 #nav a.router-link-exact-active:hover,
 #small-nav a.router-link-exact-active:hover {
   color: var(--beaublue);
@@ -248,17 +265,17 @@ a:hover {
 }
 
 @media only screen and (max-width: 344px) {
-  #branding > a > span {
+  .branding > a > span {
     display: none;
   }
 }
 
 @media only screen and (min-width: 444px) and (max-width: 1019px) {
-  #small-nav {
+  .small-nav {
     display: none;
   }
 
-  #nav {
+  .nav {
     display: flex;
   }
 }
@@ -268,11 +285,11 @@ a:hover {
     height: 100px;
   }
 
-  #small-nav {
+  .small-nav {
     display: none;
   }
 
-  #nav {
+  .nav {
     display: flex;
   }
 }

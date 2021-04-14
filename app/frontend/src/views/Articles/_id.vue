@@ -6,7 +6,7 @@
     </div>
     <div v-else>
       <div class="row start">
-        <div class="buttons-container">
+        <div class="buttons-container" v-if="isAdmin">
           <button @click="toggleEdit" v-if="!editing">
             <i class="fa fa-pencil-square-o"></i> Edit Article
           </button>
@@ -59,10 +59,10 @@
             placeholder="Enter Paragraph"
           ></textarea>
         </div>
-        <button @click="editArticle">
+        <button @click="editArticle" v-if="isAdmin">
           <i class="fa fa-paper-plane"></i> Submit Changes
         </button>
-        <button @click="cancelEdit">Cancel</button>
+        <button @click="cancelEdit" v-if="isAdmin">Cancel</button>
       </div>
       <div
         v-if="article.images && article.images.length > 0"
@@ -77,16 +77,22 @@
       </div>
       <div v-else class="no-image-container column center">
         <h2>No Images Uploaded for this Blog Article</h2>
-        <p>
+        <p v-if="isAdmin">
           Click the Upload button below to add an Image to this Blog Article
         </p>
       </div>
-      <div class="upload-button-container">
+      <div class="upload-button-container" v-if="isAdmin">
         <label for="title-upload" class="upload-button"
           ><i class="fa fa-picture-o"></i> Add Image</label
         >
       </div>
-      <input id="title-upload" type="file" name="photo" @change="upload" />
+      <input
+        id="title-upload"
+        type="file"
+        name="photo"
+        @change="upload"
+        v-if="isAdmin"
+      />
       <div class="comment-container column center">
         <h2>Comments:</h2>
         <div
@@ -95,7 +101,13 @@
           class="comments column center"
         >
           <div to="/" class="row end clickable-x-container">
-            <p @click="deleteComment(comment._id)" class="clickable-x">X</p>
+            <p
+              @click="deleteComment(comment._id)"
+              class="clickable-x"
+              v-if="isCommenter(comment.user)"
+            >
+              X
+            </p>
           </div>
           <p>{{ comment.name }}</p>
           <p>
@@ -105,15 +117,19 @@
         </div>
         <div v-if="article.comments.length === 0" class="no-comments">
           <h2>There are no Comments on this Blog Article</h2>
-          <p>Please leave a Comment below</p>
+          <p v-if="isLoggedIn">Please leave a Comment below</p>
         </div>
-        <div class="new-comment column center">
-          <p>New Comment:</p>
+        <div class="new-comment column center" v-if="isLoggedIn">
+          <p>Leave a comment as {{ user.firstName }} {{ user.lastName }}</p>
           <textarea v-model="newComment" placeholder="Enter Comment"></textarea>
           <button @click="createComment">
             <i class="fa fa-comment"></i> Comment
           </button>
         </div>
+        <p v-else>
+          Please <router-link to="/login">log in</router-link> to leave a
+          comment
+        </p>
       </div>
     </div>
     <div v-if="error" class="error-text-container column center">
@@ -151,7 +167,7 @@ export default {
         }
       } catch (err) {
         console.error(err);
-        this.error = err.data.message;
+        this.error = err.response.data.data.message;
       } finally {
         this.isLoading = false;
       }
@@ -180,7 +196,7 @@ export default {
         }
       } catch (err) {
         console.error(err);
-        this.error = err.data.message;
+        this.error = err.response.data.data.message;
       } finally {
         this.isLoading = false;
       }
@@ -209,7 +225,7 @@ export default {
         }
       } catch (err) {
         console.error(err);
-        this.error = err.data.message;
+        this.error = err.response.data.data.message;
       } finally {
         this.isLoading = false;
       }
@@ -225,7 +241,7 @@ export default {
         const response = await axios.post(
           "/api/comments/" + this.$route.params.id,
           {
-            name: "guest",
+            name: `${this.$root.$data.user.firstName} ${this.$root.$data.user.lastName}`,
             email: "guest",
             content: this.newComment,
             articleId: this.$router.id,
@@ -239,7 +255,7 @@ export default {
         }
       } catch (err) {
         console.error(err);
-        this.error = err.data.message;
+        this.error = err.response.data.data.message;
       } finally {
         this.isLoading = false;
       }
@@ -256,7 +272,7 @@ export default {
         }
       } catch (err) {
         console.error(err);
-        this.error = err.data.message;
+        this.error = err.response.data.data.message;
       } finally {
         this.isLoading = false;
       }
@@ -277,7 +293,7 @@ export default {
         }
       } catch (err) {
         console.error(err);
-        this.error = err.data.message;
+        this.error = err.response.data.data.message;
       } finally {
         this.isLoading = false;
       }
@@ -285,6 +301,35 @@ export default {
     cancelEdit() {
       this.editing = false;
       this.getArticle();
+    },
+    isCommenter(commentOwnerId) {
+      if (!this.$root.$data.user) {
+        return false;
+      }
+      if (
+        this.$root.$data.user._id === commentOwnerId ||
+        this.$root.$data.user.role === "admin"
+      ) {
+        return true;
+      }
+      return false;
+    },
+  },
+  computed: {
+    isAdmin() {
+      if (this.$root.$data.user && this.$root.$data.user.role === "admin") {
+        return true;
+      }
+      return false;
+    },
+    isLoggedIn() {
+      if (this.$root.$data.user) {
+        return true;
+      }
+      return false;
+    },
+    user() {
+      return this.$root.$data.user;
     },
   },
   created() {

@@ -7,6 +7,9 @@ const Article = mongoose.model('Article', require('../schemas/Article'))
 const Comment = mongoose.model('Comment', require('../schemas/Comment'))
 const Image = mongoose.model('Image', require('../schemas/Image'))
 const Paragraph = mongoose.model('Paragraph', require('../schemas/Paragraph'))
+const User = mongoose.model('User', require('../schemas/User'))
+
+const checkAdmin = require('../middleware/validUserAdmin.js').checkAdmin
 
 const upload = multer({
     dest: '../frontend/public/images/user_images/',
@@ -16,7 +19,7 @@ const upload = multer({
 })
 
 // create an article
-router.post('/', upload.single('photo'), async (req, res) => {
+router.post('/', checkAdmin, upload.single('photo'), async (req, res) => {
 
     try {
         const articleId = mongoose.Types.ObjectId()
@@ -269,7 +272,7 @@ router.get('/:articleId/paragraphs', async (req, res) => {
 })
 
 // edit an article
-router.put('/:articleId', async (req, res) => {
+router.put('/:articleId', checkAdmin, async (req, res) => {
     if (!req.params.articleId || req.params.articleId.length != 24) {
         res.status(400)
         res.send({
@@ -337,7 +340,7 @@ router.put('/:articleId', async (req, res) => {
 })
 
 // delete an article
-router.delete('/:articleId', async (req, res) => {
+router.delete('/:articleId', checkAdmin, async (req, res) => {
     if (!req.params.articleId || req.params.articleId.length != 24) {
         res.status(400)
         res.send({

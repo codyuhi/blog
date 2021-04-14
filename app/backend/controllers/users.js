@@ -1,34 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-const argon2 = require('argon2')
 
 const User = mongoose.model('User', require('../schemas/User'))
 
-const validUser = async (req, res, next) => {
-    if (!req.session.userId) {
-        return res.status(403).send({
-            message: 'Not logged in'
-        })
-    }
-    try {
-        const user = await User.findOne({
-            _id: req.session.userId
-        })
-        if (!user) {
-            return res.status(403).send({
-                message: 'Invalid auth token'
-            })
-        }
-        req.user = user
-    } catch (err) {
-        console.error(err)
-        return res.status(403).send({
-            message: 'Something went wrong while verifying your authentication'
-        })
-    }
-    next()
-}
+const validUser = require('../middleware/validUserAdmin.js').validUser
 
 // Create a User
 router.post('/', async (req, res) => {
@@ -52,6 +28,7 @@ router.post('/', async (req, res) => {
                 }
             })
         }
+        // the user schema hashes the password before it's actually saved
         const user = new User({
             firstName: req.body.firstName,
             lastName: req.body.lastName,
@@ -80,6 +57,7 @@ router.post('/', async (req, res) => {
 // Get an authenticated User's data
 router.get('/', validUser, async (req, res) => {
     try {
+        // the password is removed in the response by the user schema
         res.send({
             success: true,
             data: {
@@ -99,12 +77,82 @@ router.get('/', validUser, async (req, res) => {
 
 // Update an authenticated User's data
 router.put('/', validUser, async (req, res) => {
-
+    if (!req.body.firstName || !req.body.lastName || !req.body.username) {
+        return res.status(400).send({
+            success: false,
+            data: {
+                message: 'Invalid request. Please include all required fields'
+            }
+        })
+    }
+    try {
+        let user = await User.findOne({ _id: req.user._id })
+        if (!user) {
+            res.status(404).send({
+                success: false,
+                data: {
+                    message: 'Unable to find User with id: ' + req.user._id
+                }
+            })
+            return
+        }
+        user.firstName = req.body.firstName
+        user.lastName = req.body.lastName
+        user.username = req.body.username
+        if (req.body.password) {
+            user.password = req.body.password
+        }
+        // the user schema hashes the password before it's actually saved
+        user.save()
+        res.status(200)
+        res.send({
+            success: true,
+            data: {
+                user: user
+            }
+        })
+    } catch (err) {
+        console.error(err)
+        return res.status(500).send({
+            success: false,
+            data: {
+                message: 'Something went wrong while editing User'
+            }
+        })
+    }
 })
 
 // Delete an authenticated User
 router.delete('/', validUser, async (req, res) => {
-
+    try {
+        let user = await User.findOne({ _id: req.user._id })
+        if (!user) {
+            res.status(404)
+            res.send({
+                success: false,
+                data: {
+                    message: 'Unable to find User with id: ' + req.user._id
+                }
+            })
+            return
+        }
+        await user.delete()
+        res.status(204)
+        res.send({
+            success: true,
+            data: {
+                message: 'User deleted successfully'
+            }
+        })
+    } catch (err) {
+        console.error(err)
+        return res.status(500).send({
+            success: false,
+            data: {
+                message: 'Something went wrong while deleting User'
+            }
+        })
+    }
 })
 
 // Login
