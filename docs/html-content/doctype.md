@@ -1,8 +1,20 @@
-# Doctype Explanation (HTML Part 2)
+# Doctype Explanation (HTML Part 3)
 
 ## Intro
 
-In my last post, I shared with you the code snippet that you see onscreen.  We're going to learn what the first line, `<!DOCTYPE HTML>`, means.
+In my first post, I shared with you the code snippet that you see below.  We're going to learn what the first line, `<!DOCTYPE HTML>`, means.
+
+```
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Hello</title>
+    </head>
+    <body>
+        <h1>Hello</h1>
+    </body>
+</html>
+```
 
 ## Explanation
 
