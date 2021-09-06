@@ -1,4 +1,4 @@
-# Starting with HTML
+# Starting with HTML (HTML Part 1)
 
 ## Intro
 
