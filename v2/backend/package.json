@@ -1,0 +1,8 @@
+{
+  "name": "blog-backend",
+  "version": "0.0.1",
+  "description": "The Backend functionality for Cody Uhi's personal Blog App.",
+  "main": "index.js",
+  "author": "Cody Uhi",
+  "license": "MIT"
+}
