@@ -10,16 +10,16 @@ exports.router = express_1.default.Router({
     strict: true
 });
 exports.router.post('/', (req, res) => {
-    controllers_1.tokenController.create(req, res);
+    controllers_1.userController.create(req, res);
 });
 exports.router.get('/', (req, res) => {
-    controllers_1.tokenController.read(req, res);
+    controllers_1.userController.read(req, res);
 });
 exports.router.put('/', (req, res) => {
-    controllers_1.tokenController.update(req, res);
+    controllers_1.userController.update(req, res);
 });
 exports.router.delete('/', (req, res) => {
-    controllers_1.tokenController.delete(req, res);
+    controllers_1.userController.delete(req, res);
 });
 exports.router;
-//# sourceMappingURL=TokenRouter.js.map
+//# sourceMappingURL=UserRouter.js.map
