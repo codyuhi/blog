@@ -4,16 +4,16 @@ exports.TokenController = void 0;
 const RestController_1 = require("./RestController");
 class TokenController extends RestController_1.RestController {
     create(req, res) {
-        throw new Error('Method not implemented.');
+        res.json({ message: 'POST /api/token request received' });
     }
     read(req, res) {
-        res.json({ message: 'GET /token request received' });
+        res.json({ message: 'GET /api/token request received' });
     }
     update(req, res) {
-        throw new Error('Method not implemented.');
+        res.json({ message: 'PUT /api/token request received' });
     }
     delete(req, res) {
-        throw new Error('Method not implemented.');
+        res.json({ message: 'DELETE /api/token request received' });
     }
 }
 exports.TokenController = TokenController;
