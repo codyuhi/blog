@@ -5,21 +5,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 const express_1 = __importDefault(require("express"));
+const middleware_1 = require("../middleware");
 const controllers_1 = require("../controllers");
 exports.router = express_1.default.Router({
     strict: true
 });
-exports.router.post('/', (req, res) => {
+// POST requests
+exports.router.post('/', middleware_1.validUser, (req, res) => {
     controllers_1.commentController.create(req, res);
 });
-exports.router.get('/', (req, res) => {
+// GET requests
+exports.router.get('/', middleware_1.checkAdmin, (req, res) => {
     controllers_1.commentController.read(req, res);
 });
-exports.router.put('/', (req, res) => {
+exports.router.get('/:commentId', (req, res) => {
+    controllers_1.commentController.readOne(req, res);
+});
+// PUT requests
+exports.router.put('/', middleware_1.checkAdmin, (req, res) => {
     controllers_1.commentController.update(req, res);
 });
-exports.router.delete('/', (req, res) => {
+exports.router.put('/:commentId', middleware_1.validUser, (req, res) => {
+    controllers_1.commentController.updateOne(req, res);
+});
+// DELETE requests
+exports.router.delete('/', middleware_1.checkAdmin, (req, res) => {
     controllers_1.commentController.delete(req, res);
+});
+exports.router.delete('/:commentId', middleware_1.validUser, (req, res) => {
+    controllers_1.commentController.deleteOne(req, res);
 });
 exports.router;
 //# sourceMappingURL=CommentRouter.js.map
