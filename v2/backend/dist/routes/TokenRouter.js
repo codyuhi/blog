@@ -5,20 +5,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 const express_1 = __importDefault(require("express"));
+const middleware_1 = require("../middleware");
 const controllers_1 = require("../controllers");
 exports.router = express_1.default.Router({
     strict: true
 });
+// POST requests
 exports.router.post('/', (req, res) => {
     controllers_1.tokenController.create(req, res);
 });
-exports.router.get('/', (req, res) => {
+// GET requests
+exports.router.get('/', middleware_1.checkAdmin, (req, res) => {
     controllers_1.tokenController.read(req, res);
 });
-exports.router.put('/', (req, res) => {
+// PUT requests
+exports.router.put('/', middleware_1.checkAdmin, (req, res) => {
     controllers_1.tokenController.update(req, res);
 });
-exports.router.delete('/', (req, res) => {
+// DELETE requests
+exports.router.delete('/', middleware_1.validUser, (req, res) => {
     controllers_1.tokenController.delete(req, res);
 });
 exports.router;
