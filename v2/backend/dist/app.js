@@ -13,8 +13,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const mongodb_1 = require("mongodb");
 const constants_1 = require("./config/constants");
 const routes_1 = require("./routes");
+const client = new mongodb_1.MongoClient(constants_1.DB_CONN_STRING);
+function testDbConnection() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client.connect();
+            console.log('Successfully able to connect to MongoDB');
+        }
+        catch (err) {
+            console.error(`Unable to connect to MongoDB: ${err}`);
+        }
+        finally {
+            yield client.close();
+        }
+    });
+}
+testDbConnection();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

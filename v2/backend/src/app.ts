@@ -1,11 +1,25 @@
 import express, { Request, Response } from 'express'
-import { PORT } from './config/constants'
+import { MongoClient } from 'mongodb'
+import { PORT, DB_CONN_STRING } from './config/constants'
 import {
     tokenRouter,
     userRouter,
     commentRouter,
     articleRouter
 } from './routes'
+
+const client = new MongoClient(DB_CONN_STRING!)
+async function testDbConnection() {
+    try {
+        await client.connect()
+        console.log('Successfully able to connect to MongoDB')
+    } catch (err) {
+        console.error(`Unable to connect to MongoDB: ${err}`)
+    } finally {
+        await client.close()
+    }
+}
+testDbConnection()
 
 const app = express()
 app.use(express.json())
