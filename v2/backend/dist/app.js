@@ -13,36 +13,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const mongodb_1 = require("mongodb");
+const database_service_1 = require("./db/database.service");
 const constants_1 = require("./config/constants");
 const routes_1 = require("./routes");
-const client = new mongodb_1.MongoClient(constants_1.DB_CONN_STRING);
-function testDbConnection() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield client.connect();
-            console.log('Successfully able to connect to MongoDB');
-        }
-        catch (err) {
-            console.error(`Unable to connect to MongoDB: ${err}`);
-        }
-        finally {
-            yield client.close();
-        }
-    });
-}
-testDbConnection();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`${req.method.toUpperCase()} ${new Date().toLocaleString()}: ${req.path}`);
     next();
 }));
-app.use('/api/token', routes_1.tokenRouter);
-app.use('/api/user', routes_1.userRouter);
-app.use('/api/comment', routes_1.commentRouter);
-app.use('/api/article', routes_1.articleRouter);
-app.listen(constants_1.PORT, () => {
-    console.log(`Server is listening on port ${constants_1.PORT}`);
+(0, database_service_1.connectToDatabase)()
+    .then(() => {
+    app.use('/api/token', routes_1.tokenRouter);
+    app.use('/api/user', routes_1.userRouter);
+    app.use('/api/comment', routes_1.commentRouter);
+    app.use('/api/article', routes_1.articleRouter);
+    app.listen(constants_1.PORT, () => {
+        console.log(`Server is listening on port ${constants_1.PORT}`);
+    });
+})
+    .catch((err) => {
+    console.error('Unable to connect to database', err);
+    process.exit();
 });
 //# sourceMappingURL=app.js.map

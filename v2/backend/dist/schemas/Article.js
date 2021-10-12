@@ -1,22 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Article = void 0;
-const mongoose_1 = require("mongoose");
-const Comment_1 = require("./Comment");
-exports.Article = new mongoose_1.Schema({
-    title: String,
-    description: String,
-    heroImgUrl: String,
-    created: {
-        type: Date,
-        default: Date.now
-    },
-    comments: [{
-            type: Comment_1.Comment
-        }],
-    tags: [{
-            type: String
-        }]
-});
-exports.Article;
+class Article {
+    constructor(title, description, heroImgUrl, created, comments, tags, id) {
+        this.title = title;
+        this.description = description;
+        this.heroImgUrl = heroImgUrl;
+        this.id = id;
+    }
+}
+exports.default = Article;
 //# sourceMappingURL=Article.js.map
