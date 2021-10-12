@@ -1,20 +1,16 @@
-import { Schema } from 'mongoose'
-import { Comment } from './Comment'
+import { ObjectId } from 'mongodb'
 
-export const Article = new Schema({
-    title: String,
-    description: String,
-    heroImgUrl: String,
-    created: {
-        type: Date,
-        default: Date.now
-    },
-    comments: [{
-        type: Comment
-    }],
-    tags: [{
-        type: String
-    }]
-})
-
-Article
+export default class Article {
+    constructor(
+        public title: string,
+        public description: string,
+        public heroImgUrl: string,
+        created: {
+            type: Date,
+            default: ObjectId["getTimestamp"]
+        },
+        comments: string[],
+        tags: string[],
+        public id?: ObjectId,
+    ) { }
+}

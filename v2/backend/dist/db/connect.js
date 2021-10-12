@@ -8,14 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-// import { MongoClient } from 'mongodb'
-// import { DB_CONN_STRING } from '../config/constants'
+var _a;
 const MongoClient = require('mongodb').MongoClient;
-// const DB_CONN_STRING = require('../config/constants').DB_CONN_STRING
-// const url = DB_CONN_STRING ?? ''
-const url = `mongodb+srv://codyuhi:1ZVryylrv6s7ox2hS9%5E%23fT7a3*WJh@cluster0.prt9q.mongodb.net/blog?retryWrites=true&w=majority`;
+const dotenv = require('dotenv');
+dotenv.config();
+const url = (_a = process.env.DB_CONN_STRING) !== null && _a !== void 0 ? _a : null;
 const client = new MongoClient(url);
-console.log(encodeURIComponent('1ZVryylrv6s7ox2hS9^#fT7a3*WJh'));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
