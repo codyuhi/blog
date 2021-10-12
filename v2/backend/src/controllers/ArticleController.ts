@@ -21,9 +21,9 @@ export class ArticleController extends RestController {
             }
             const articleId = new ObjectId()
             const article = {
-                title: req.body.article.title,
-                description: req.body.article.description,
-                heroImgUrl: req.body.article.heroImgUrl,
+                title: req.body.article.title ?? null,
+                description: req.body.article.description ?? null,
+                heroImgUrl: req.body.article.heroImgUrl ?? null,
                 created: Date.now(),
                 comments: [],
                 tags: req.body.article.tags ?? [],
@@ -34,7 +34,7 @@ export class ArticleController extends RestController {
             res.json({
                 success: true,
                 data: {
-                    article: articleId,
+                    article: article,
                     message: `Successfully created Article with id ${articleId}`
                 }
             })
@@ -72,7 +72,7 @@ export class ArticleController extends RestController {
     }
     public async readOne(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
         try {
-            if (!req.params.articleId) {
+            if (!req.params.articleId || !ObjectId.isValid(req.params.articleId)) {
                 res.status(400)
                 res.json({
                     success: false,
@@ -126,7 +126,7 @@ export class ArticleController extends RestController {
     }
     public async updateOne(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
         try {
-            if (!req.params.articleId) {
+            if (!req.params.articleId || !ObjectId.isValid(req.params.articleId)) {
                 res.status(400)
                 res.json({
                     success: false,
@@ -136,7 +136,7 @@ export class ArticleController extends RestController {
                 })
                 return
             }
-            if(!req.body.article) {
+            if (!req.body.article) {
                 res.status(400)
                 res.json({
                     success: false,
@@ -185,32 +185,75 @@ export class ArticleController extends RestController {
             })
         }
     }
-    public delete(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): void {
-        res.status(204)
-        res.json({
-            success: true,
-            data: {
-                message: 'Successfully deleted all articles'
-            }
-        })
-    }
-    public deleteOne(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): void {
-        if (!req.params.articleId) {
-            res.status(400)
+    public async delete(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
+        try {
+            await collection.articles?.drop()
+            res.status(204)
+            res.json({
+                success: true,
+                data: {
+                    message: 'Successfully deleted all articles'
+                }
+            })
+        } catch (err) {
+            console.error('Something went wrong while deleting articles', err)
+            res.status(500)
             res.json({
                 success: false,
                 data: {
-                    message: 'Invalid article id'
+                    message: 'Something went wrong while deleting articles'
                 }
             })
-            return
         }
-        res.status(204)
-        res.json({
-            success: true,
-            data: {
-                message: `Successfully deleted article with id ${req.params.articleId}`
+    }
+    public async deleteOne(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
+        try {
+            if (!req.params.articleId || !ObjectId.isValid(req.params.articleId)) {
+                res.status(400)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'Invalid article id'
+                    }
+                })
+                return
             }
-        })
+            const query = { _id: new ObjectId(req.params.articleId) }
+            const result = await collection.articles?.deleteOne(query)
+            if (result && result.deletedCount) {
+                res.status(204)
+                res.json({
+                    success: true,
+                    data: {
+                        message: `Successfully deleted article with id ${req.params.articleId}`
+                    }
+                })
+            } else if (!result) {
+                res.status(400)
+                res.json({
+                    success: false,
+                    data: {
+                        message: `Something went wrong while deleting article with id ${req.params.articleId}`
+                    }
+                })
+            } else if (!result.deletedCount) {
+                res.status(404)
+                res.json({
+                    success: false,
+                    data: {
+                        message: `Unable to find article with id ${req.params.articleId}`
+                    }
+                })
+            }
+        } catch (err) {
+            console.error(`Something went wrong while deleting article with id ${req.params.articleId}`, err)
+            res.status(500)
+            res.json({
+                success: false,
+                data: {
+                    message: `Something went wrong while deleting article with id ${req.params.articleId}`
+                }
+            })
+        }
     }
 }
