@@ -8,3 +8,5 @@ export const Token = new Schema({
         default: Date.now() + 2 * (60 * 60 * 1000)
     }
 })
+
+Token

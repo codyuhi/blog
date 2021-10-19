@@ -9,6 +9,7 @@ export const ValidUser = async (req: Request, res: Response, next: NextFunction)
                 message: 'Not logged in'
             }
         })
+        return
     }
     // TODO: search for user by token in DB. If not a real user, respond 403
     next()
