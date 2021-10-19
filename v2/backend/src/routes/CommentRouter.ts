@@ -12,6 +12,10 @@ router.post('/', validUser, (req: Request, res: Response) => {
     commentController.create(req, res)
 })
 
+router.post('/:articleId', validUser, (req: Request, res: Response) => {
+    commentController.createOne(req, res)
+})
+
 // GET requests
 
 router.get('/', checkAdmin, (req: Request, res: Response) => {

@@ -8,7 +8,6 @@ export const User = new Schema({
     lastName: String,
     email: {
         type: String,
-        unique: true,
         required: true
     },
     username: {

@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose'
+import { ObjectId } from 'mongodb'
 
 export const Article = new Schema({
     title: String,
@@ -10,7 +11,8 @@ export const Article = new Schema({
     },
     comments: [
         {
-            type: String
+            type: ObjectId,
+            ref: 'Comment'
         }
     ],
     tags: [

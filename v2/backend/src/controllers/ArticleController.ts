@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import { RestController } from "./RestController";
-import { Article } from '../schemas'
+import { Article, Comment } from '../schemas'
 import { ObjectId } from 'mongodb'
 
 export class ArticleController extends RestController {
@@ -190,6 +190,7 @@ export class ArticleController extends RestController {
     public async delete(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
         try {
             await Article.deleteMany()
+            await Comment.deleteMany()
             res.status(204)
             res.json({
                 success: true,
@@ -223,6 +224,7 @@ export class ArticleController extends RestController {
             const query = { _id: new ObjectId(req.params.articleId) }
             const result = await Article.deleteOne(query)
             if (result && result.deletedCount) {
+                await Comment.deleteMany({ articleId: new ObjectId(req.params.articleId) })
                 res.status(204)
                 res.json({
                     success: true,

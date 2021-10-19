@@ -2,9 +2,10 @@ import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ParsedQs } from 'qs'
 import argon2 from 'argon2'
-import { User } from '../schemas'
+import { User, Token } from '../schemas'
 import { RestController } from './RestController'
-import { ObjectId } from 'bson'
+import { ObjectId } from 'mongodb'
+import { v4 as uuid } from 'uuid'
 
 export class UserController extends RestController {
     public async create(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
@@ -28,6 +29,8 @@ export class UserController extends RestController {
             })
             return
         }
+        // TODO: perform check for valid email address
+            // TODO: If token is expired, return 403
         const readResult = (await User.find({ $or: [{ username: req.body.user.username }, { email: req.body.user.email }] }))
         if (!readResult || readResult.length > 0) {
             res.status(400)
@@ -48,9 +51,13 @@ export class UserController extends RestController {
             username: req.body.user.username,
             password: hash
         })
+        const token = new Token({
+            token: uuid(),
+            userId: user._id
+        })
         await user.save()
+        await token.save()
         res.status(201)
-        // TODO: include generated token in response
         res.json({
             success: true,
             data: {
@@ -60,6 +67,7 @@ export class UserController extends RestController {
                     email: user.email,
                     _id: user._id
                 },
+                token: token.token,
                 message: 'Successfully created user'
             }
         })
@@ -166,6 +174,8 @@ export class UserController extends RestController {
                 })
                 return
             }
+            // TODO: Validate that the user being updated matches the header token (or isAdmin)
+            // TODO: If token is expired, return 403
             const userId = new ObjectId(req.params.userId)
             const hash = await argon2.hash(req.body.user.password)
             const updatedUser = new User({
@@ -239,6 +249,8 @@ export class UserController extends RestController {
                 })
                 return
             }
+            // TODO: Validate that the user being deleted matches the token (or isAdmin)
+            // TODO: If token is expired, return 403
             const query = { _id: new ObjectId(req.params.userId) }
             const result = await User.deleteOne(query)
             if (result && result.deletedCount) {
