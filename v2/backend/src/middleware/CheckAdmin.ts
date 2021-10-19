@@ -9,6 +9,7 @@ export const CheckAdmin = async (req: Request, res: Response, next: NextFunction
                 message: 'Not logged in'
             }
         })
+        return
     }
     // TODO: search for user by token in DB. If not an admin, respond 403
     next()

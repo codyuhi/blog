@@ -18,6 +18,10 @@ router.get('/', checkAdmin, (req: Request, res: Response) => {
     userController.read(req, res)
 })
 
+router.get('/:userId', validUser, (req: Request, res: Response) => {
+    userController.readOne(req, res)
+})
+
 // PUT requests
 
 router.put('/', validUser, (req: Request, res: Response) => {

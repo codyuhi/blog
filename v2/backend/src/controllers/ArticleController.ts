@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import { RestController } from "./RestController";
-import { collection } from '../db/database.service'
 import { Article } from '../schemas'
 import { ObjectId } from 'mongodb'
 
@@ -20,7 +19,7 @@ export class ArticleController extends RestController {
                 return
             }
             const articleId = new ObjectId()
-            const article = {
+            const article = new Article({
                 title: req.body.article.title ?? null,
                 description: req.body.article.description ?? null,
                 heroImgUrl: req.body.article.heroImgUrl ?? null,
@@ -28,8 +27,8 @@ export class ArticleController extends RestController {
                 comments: [],
                 tags: req.body.article.tags ?? [],
                 _id: articleId
-            } as Article
-            await collection.articles?.insertOne(article)
+            })
+            await article.save()
             res.status(201)
             res.json({
                 success: true,
@@ -51,7 +50,7 @@ export class ArticleController extends RestController {
     }
     public async read(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
         try {
-            const articles = (await collection.articles?.find({}).toArray()) as Article[]
+            const articles = await Article.find()
             res.status(200)
             res.json({
                 success: true,
@@ -61,6 +60,7 @@ export class ArticleController extends RestController {
                 }
             })
         } catch (err) {
+            console.error('Something went wrong while grabbing all articles:', err)
             res.status(500)
             res.json({
                 success: false,
@@ -82,9 +82,9 @@ export class ArticleController extends RestController {
                 })
                 return
             }
-            const article = (await collection.articles?.findOne({
+            const article = (await Article.findOne({
                 _id: new ObjectId(req.params.articleId)
-            })) as Article
+            }))
 
             if (!article) {
                 res.status(404)
@@ -144,9 +144,10 @@ export class ArticleController extends RestController {
                         message: 'Missing article object in request body'
                     }
                 })
+                return
             }
             const articleId = new ObjectId(req.params.articleId)
-            const updatedArticle = {
+            const updatedArticle = new Article({
                 title: req.body.article.title,
                 description: req.body.article.description,
                 heroImgUrl: req.body.article.heroImgUrl,
@@ -154,9 +155,9 @@ export class ArticleController extends RestController {
                 comments: req.body.article.comments as Comment[],
                 tags: req.body.article.tags ?? [],
                 _id: articleId
-            } as Article
+            })
             const query = { _id: articleId }
-            const result = await collection.articles?.updateOne(query, { $set: updatedArticle })
+            const result = await Article.updateOne(query, { $set: updatedArticle })
             if (!result) {
                 res.status(404)
                 res.json({
@@ -165,6 +166,7 @@ export class ArticleController extends RestController {
                         message: `Unable to find article with id ${req.params.articleId}`
                     }
                 })
+                return
             }
             res.status(200)
             res.json({
@@ -187,7 +189,7 @@ export class ArticleController extends RestController {
     }
     public async delete(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
         try {
-            await collection.articles?.drop()
+            await Article.deleteMany()
             res.status(204)
             res.json({
                 success: true,
@@ -219,7 +221,7 @@ export class ArticleController extends RestController {
                 return
             }
             const query = { _id: new ObjectId(req.params.articleId) }
-            const result = await collection.articles?.deleteOne(query)
+            const result = await Article.deleteOne(query)
             if (result && result.deletedCount) {
                 res.status(204)
                 res.json({
@@ -228,6 +230,7 @@ export class ArticleController extends RestController {
                         message: `Successfully deleted article with id ${req.params.articleId}`
                     }
                 })
+                return
             } else if (!result) {
                 res.status(400)
                 res.json({
@@ -236,6 +239,7 @@ export class ArticleController extends RestController {
                         message: `Something went wrong while deleting article with id ${req.params.articleId}`
                     }
                 })
+                return
             } else if (!result.deletedCount) {
                 res.status(404)
                 res.json({
@@ -244,6 +248,7 @@ export class ArticleController extends RestController {
                         message: `Unable to find article with id ${req.params.articleId}`
                     }
                 })
+                return
             }
         } catch (err) {
             console.error(`Something went wrong while deleting article with id ${req.params.articleId}`, err)

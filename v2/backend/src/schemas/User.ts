@@ -1,18 +1,31 @@
-import { ObjectId } from 'mongodb'
+import { Schema } from 'mongoose'
 
-export default class User {
-    constructor(
-        public firstName: string,
-        public lastName: string,
-        public email: string,
-        public username: string,
-        public password: string,
-        public role: {
-            type: string,
-            default: 'user',
-            select: false
-        }
-    ) { }
+export const User = new Schema({
+    firstName: {
+        type: String,
+        required: true
+    },
+    lastName: String,
+    email: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    username: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        select: false,
+        required: true
+    },
+    role: {
+        type: String,
+        default: 'user',
+        select: false
+    }
 }
+)
 
 User

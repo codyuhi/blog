@@ -1,11 +1,10 @@
-import { ObjectId } from 'bson'
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ParsedQs } from 'qs'
 import argon2 from 'argon2'
 import { User } from '../schemas'
-import { collection } from '../db/database.service'
 import { RestController } from './RestController'
+import { ObjectId } from 'bson'
 
 export class UserController extends RestController {
     public async create(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
@@ -29,8 +28,8 @@ export class UserController extends RestController {
             })
             return
         }
-        const readResult = (await collection.users?.find({ $or: [{ username: req.body.user.username }, { email: req.body.user.email }] }))
-        if (!readResult) {
+        const readResult = (await User.find({ $or: [{ username: req.body.user.username }, { email: req.body.user.email }] }))
+        if (!readResult || readResult.length > 0) {
             res.status(400)
             res.json({
                 success: false,
@@ -42,14 +41,14 @@ export class UserController extends RestController {
         }
 
         const hash = await argon2.hash(req.body.user.password)
-        const user = {
+        const user = new User({
             firstName: req.body.user.firstName,
             lastName: req.body.user.lastName,
             email: req.body.user.email,
             username: req.body.user.username,
             password: hash
-        } as User
-        await collection.users?.insertOne(user)
+        })
+        await user.save()
         res.status(201)
         // TODO: include generated token in response
         res.json({
@@ -59,20 +58,81 @@ export class UserController extends RestController {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,
-                    username: user.username
+                    _id: user._id
                 },
                 message: 'Successfully created user'
             }
         })
+        return
     }
-    public read(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): void {
-        res.status(200)
-        res.json({
-            success: true,
-            data: {
-                message: 'Successfully queried all users'
+    public async read(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
+        try {
+            const users = await User.find()
+            res.status(200)
+            res.json({
+                success: true,
+                data: {
+                    users: users,
+                    message: 'Successfully queried all users'
+                }
+            })
+            return
+        } catch (err) {
+            res.status(500)
+            res.json({
+                success: false,
+                data: {
+                    message: 'Something went wrong while grabbing all users'
+                }
+            })
+            return
+        }
+    }
+    public async readOne(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
+        try {
+            if (!req.params.userId || !ObjectId.isValid(req.params.userId)) {
+                res.status(400)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'Invalid user id'
+                    }
+                })
+                return
             }
-        })
+            const user = await User.findOne({
+                _id: new ObjectId(req.params.userId)
+            })
+            if (!user) {
+                res.status(404)
+                res.json({
+                    success: false,
+                    data: {
+                        message: `Unable to find user with id ${req.params.userId}`
+                    }
+                })
+                return
+            }
+            res.status(200)
+            res.json({
+                success: true,
+                data: {
+                    user: user,
+                    message: `Successfully retrieved user with id ${req.params.userId}`
+                }
+            })
+            return
+        } catch (err) {
+            console.error(`Something went wrong while retrieving user with id ${req.params.userId}`, err)
+            res.status(500)
+            res.json({
+                success: false,
+                data: {
+                    message: `Something went wrong while retrieving user with id ${req.params.userId}`
+                }
+            })
+            return
+        }
     }
     public update(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): void {
         res.status(400)
@@ -82,33 +142,142 @@ export class UserController extends RestController {
                 message: 'Invalid request type'
             }
         })
+        return
     }
-    public delete(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): void {
-        res.status(204)
-        res.json({
-            success: true,
-            data: {
-                message: 'Successfully deleted all users'
+    public async updateOne(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
+        try {
+            if (!req.params.userId || !ObjectId.isValid(req.params.userId)) {
+                res.status(400)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'Invalid user id'
+                    }
+                })
+                return
             }
-        })
-    }
-    public deleteOne(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): void {
-        if (!req.params.userId) {
-            res.status(400)
+            if (!req.body.user) {
+                res.status(400)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'Missing user object in request body'
+                    }
+                })
+                return
+            }
+            const userId = new ObjectId(req.params.userId)
+            const hash = await argon2.hash(req.body.user.password)
+            const updatedUser = new User({
+                firstName: req.body.user.firstName,
+                lastName: req.body.user.lastName,
+                email: req.body.user.email,
+                username: req.body.user.username,
+                password: hash
+            })
+            const query = { _id: userId }
+            const result = await User.updateOne(query, { $set: updatedUser })
+            if (!result) {
+                res.status(404)
+                res.json({
+                    success: false,
+                    data: {
+                        message: `Unable to find user with id ${req.params.userId}`
+                    }
+                })
+                return
+            }
+            res.status(200)
+            res.json({
+                success: true,
+                data: {
+                    user: updatedUser,
+                    message: `Successfully updated user with id ${req.params.userId}`
+                }
+            })
+        } catch (err) {
+            console.error(`Something went wrong while updating user with id ${req.params.userId}`)
+            res.status(500)
             res.json({
                 success: false,
                 data: {
-                    message: 'Invalid user id'
+                    message: `Something went wrong while updating `
                 }
             })
-            return
         }
-        res.status(204)
-        res.json({
-            success: true,
-            data: {
-                message: `Successfully deleted user with id ${req.params.userId}`
+    }
+    public async delete(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
+        try {
+            await User.deleteMany()
+            res.status(204)
+            res.json({
+                success: true,
+                data: {
+                    message: 'Successfully deleted all users'
+                }
+            })
+        } catch (err) {
+            console.error('Something went wrong while deleting users', err)
+            res.status(500)
+            res.json({
+                success: false,
+                data: {
+                    message: 'Something went wrong while deleting users'
+                }
+            })
+        }
+    }
+    public async deleteOne(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
+        try {
+            if (!req.params.userId) {
+                res.status(400)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'Invalid user id'
+                    }
+                })
+                return
             }
-        })
+            const query = { _id: new ObjectId(req.params.userId) }
+            const result = await User.deleteOne(query)
+            if (result && result.deletedCount) {
+                res.status(204)
+                res.json({
+                    success: true,
+                    data: {
+                        message: `Successfully deleted user with id ${req.params.userId}`
+                    }
+                })
+                return
+            } else if (!result) {
+                res.status(400)
+                res.json({
+                    success: false,
+                    data: {
+                        message: `Something went wrong while deleting user with id ${req.params.userId}`
+                    }
+                })
+                return
+            } else if (!result.deletedCount) {
+                res.status(404)
+                res.json({
+                    success: false,
+                    data: {
+                        message: `Unable to find user with id ${req.params.userId}`
+                    }
+                })
+                return
+            }
+        } catch (err) {
+            console.error(`Something went wrong while deleting user with id ${req.params.userId}: ${err}`)
+            res.status(500)
+            res.json({
+                success: false,
+                data: {
+                    message: `Something went wrong while deleting user with it ${req.params.userId}`
+                }
+            })
+        }
     }
 }
