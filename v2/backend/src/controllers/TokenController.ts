@@ -37,7 +37,6 @@ export class TokenController extends RestController {
         })
         await token.save()
         res.status(201)
-        // TODO: include generated token in response
         res.json({
             success: true,
             data: {
@@ -64,17 +63,57 @@ export class TokenController extends RestController {
             }
         })
     }
-    public delete(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): void {
-        if (req.headers.token) {
-            // TODO: Implement token delete operation in DB
-        }
-        res.status(204)
-        res.json({
-            success: true,
-            data: {
-                message: 'Successfully logged out'
+    public async delete(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
+        try {
+            if (!req.headers.token) {
+                res.status(400)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'Invalid token'
+                    }
+                })
+                return
             }
-        })
+            const query = { token: req.headers.token }
+            const result = await Token.deleteOne(query)
+            if (result && result.deletedCount) {
+                res.status(204)
+                res.json({
+                    success: true,
+                    data: {
+                        message: 'Successfully logged out'
+                    }
+                })
+                return
+            } else if (!result) {
+                res.status(400)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'Something went wrong while logging out'
+                    }
+                })
+                return
+            } else {
+                res.status(404)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'Provided token not found'
+                    }
+                })
+            }
+        } catch (err) {
+            console.error('Something went wrong while logging out user:', err)
+            res.status(500)
+            res.json({
+                success: false,
+                data: {
+                    message: 'Something went wrong while logging out user'
+                }
+            })
+        }
     }
 
 }
