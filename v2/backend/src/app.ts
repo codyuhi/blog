@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express'
+import { connectToDatabase } from './db/database.service'
 import { PORT } from './config/constants'
 import {
     tokenRouter,
@@ -17,11 +18,18 @@ app.use(async (req: Request, res: Response, next) => {
     next()
 })
 
-app.use('/api/token', tokenRouter)
-app.use('/api/user', userRouter)
-app.use('/api/comment', commentRouter)
-app.use('/api/article', articleRouter)
+connectToDatabase()
+    .then(() => {
+        app.use('/api/token', tokenRouter)
+        app.use('/api/user', userRouter)
+        app.use('/api/comment', commentRouter)
+        app.use('/api/article', articleRouter)
 
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`)
-})
+        app.listen(PORT, () => {
+            console.log(`Server is listening on port ${PORT}`)
+        })
+    })
+    .catch((err) => {
+        console.error('Unable to connect to database', err)
+        process.exit()
+    })
