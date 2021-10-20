@@ -29,8 +29,16 @@ export class UserController extends RestController {
             })
             return
         }
-        // TODO: perform check for valid email address
-            // TODO: If token is expired, return 403
+        const regex = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/
+        if (!regex.test(req.body.user.email)) {
+            res.status(400)
+            res.json({
+                success: false,
+                data: {
+                    message: 'Invalid email address.  Please provide a valid email address'
+                }
+            })
+        }
         const readResult = (await User.find({ $or: [{ username: req.body.user.username }, { email: req.body.user.email }] }))
         if (!readResult || readResult.length > 0) {
             res.status(400)
@@ -42,7 +50,6 @@ export class UserController extends RestController {
             })
             return
         }
-
         const hash = await argon2.hash(req.body.user.password)
         const user = new User({
             firstName: req.body.user.firstName,
@@ -174,8 +181,28 @@ export class UserController extends RestController {
                 })
                 return
             }
-            // TODO: Validate that the user being updated matches the header token (or isAdmin)
-            // TODO: If token is expired, return 403
+            const token = await Token.findOne({ token: req.headers.token })
+            if (!token) {
+                res.status(403)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'Invalid token'
+                    }
+                })
+                return
+            }
+            const user = await User.findOne({ _id: token.userId })
+            if (req.params.userId !== user.userId && user.role !== 'admin') {
+                res.status(403)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'You do not have permission to perform this action'
+                    }
+                })
+                return
+            }
             const userId = new ObjectId(req.params.userId)
             const hash = await argon2.hash(req.body.user.password)
             const updatedUser = new User({
@@ -249,8 +276,28 @@ export class UserController extends RestController {
                 })
                 return
             }
-            // TODO: Validate that the user being deleted matches the token (or isAdmin)
-            // TODO: If token is expired, return 403
+            const token = await Token.findOne({ token: req.headers.token })
+            if (!token) {
+                res.status(403)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'Invalid token'
+                    }
+                })
+                return
+            }
+            const user = await User.findOne({ _id: token.userId })
+            if (req.params.userId !== user.userId && user.role !== 'admin') {
+                res.status(403)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'You do not have permission to perform this action'
+                    }
+                })
+                return
+            }
             const query = { _id: new ObjectId(req.params.userId) }
             const result = await User.deleteOne(query)
             if (result && result.deletedCount) {
