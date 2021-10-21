@@ -19,7 +19,7 @@ export class UserController extends RestController {
             })
             return
         }
-        if (!req.body.user.firstName || !req.body.user.lastName || !req.body.user.email || !req.body.user.password) {
+        if (!req.body.user.firstName || !req.body.user.lastName || !req.body.user.email || !req.body.user.username || !req.body.user.password) {
             res.status(400)
             res.json({
                 success: false,
@@ -72,6 +72,7 @@ export class UserController extends RestController {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,
+                    username: req.body.user.username,
                     _id: user._id
                 },
                 token: token.token,
