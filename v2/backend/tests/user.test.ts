@@ -3,12 +3,21 @@ import { after, describe } from 'mocha'
 import chai, { expect } from 'chai'
 import chaiHttp from 'chai-http'
 import { exit } from 'process'
+import { User } from '../src/schemas'
 
 chai.should()
 chai.use(chaiHttp)
 
 describe('In the User API,', () => {
     const chaiConnection = chai.request(app).keepOpen()
+    let testUser: {
+        firstName: string,
+        lastName: string,
+        email: string,
+        username: string,
+        _id: string
+    }
+    let testToken: string
 
     describe('The Create User endpoint', () => {
 
@@ -32,7 +41,10 @@ describe('In the User API,', () => {
                     expect(res.body.data.user.email).to.equal('happypath@email.com')
                     expect(res.body.data.user.username).to.equal('happypath')
                     expect(res.body.data.user.password).to.equal(undefined)
+                    expect(res.body.data.user._id).to.be.string
                     expect(res.body.data.message).to.equal('Successfully created user')
+                    testUser = res.body.data.user
+                    testToken = res.body.data.token
                 })
         })
 
@@ -209,9 +221,62 @@ describe('In the User API,', () => {
     })
 
     describe('The Delete User endpoint', () => {
-        // TODO: Complete test cases for this
-        it('Works', () => {
-            expect(true).to.be.true
+        let secondTestUser: {
+            firstName: string,
+            lastName: string,
+            email: string,
+            username: string,
+            _id: string
+        }
+        let secondTestToken: string
+        before(async () => {
+            await chaiConnection
+                .post('/api/user')
+                .send({
+                    user: {
+                        firstName: 'happy2',
+                        lastName: 'path2',
+                        email: 'happypath2@email.com',
+                        username: 'happypath2',
+                        password: 'happypath2'
+                    }
+                })
+                .then((res) => {
+                    secondTestUser = res.body.data.user
+                    secondTestToken = res.body.data.token
+                })
+        })
+
+        it('Does not Delete anything if the token is missing', async () => {
+            return await chaiConnection
+                .delete(`/api/user/${testUser._id}`)
+                .then((res) => {
+                    expect(res).to.have.status(403)
+                    expect(res.body.success).to.be.false
+                    expect(res.body.data.message).to.equal('Not logged in')
+                })
+        })
+
+        it('Does not Delete anything if the provided token is for another User', async () => {
+            return await chaiConnection
+                .delete(`/api/user/${testUser._id}`)
+                .set('token', secondTestToken)
+                .then((res) => {
+                    expect(res).to.have.status(403)
+                    expect(res.body.success).to.be.false
+                    expect(res.body.data.message).to.equal('You do not have permission to perform this action')
+                })
+        })
+
+        it('Deletes a User by ID', async () => {
+            await chaiConnection
+                .delete(`/api/user/${testUser._id}`)
+                .set('token', testToken)
+                .then((res) => {
+                    expect(res).to.have.status(204)
+                    expect(res.body.success).to.be.true
+                    expect(res.body.data.message).to.equal(`Successfully deleted user with id ${testUser._id}`)
+                })
         })
     })
 
