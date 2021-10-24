@@ -18,18 +18,20 @@ app.use(async (req: Request, res: Response, next) => {
     next()
 })
 
-connectToDatabase()
-    .then(() => {
-        app.use('/api/token', tokenRouter)
-        app.use('/api/user', userRouter)
-        app.use('/api/comment', commentRouter)
-        app.use('/api/article', articleRouter)
+try {
+    connectToDatabase()
+    // TODO: make sure all endpoints' code is wrapped in try/catch
+    app.use('/api/token', tokenRouter)
+    app.use('/api/user', userRouter)
+    app.use('/api/comment', commentRouter)
+    app.use('/api/article', articleRouter)
 
-        app.listen(PORT, () => {
-            console.log(`Server is listening on port ${PORT}`)
-        })
+    app.listen(PORT, () => {
+        console.log(`Server is listening on port ${PORT}`)
     })
-    .catch((err) => {
-        console.error('Unable to connect to database', err)
-        process.exit()
-    })
+} catch (err) {
+    console.error('Unable to connect to database or start server:', err)
+    process.exit()
+}
+
+export default app

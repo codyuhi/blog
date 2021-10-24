@@ -19,7 +19,7 @@ export class UserController extends RestController {
             })
             return
         }
-        if (!req.body.user.firstName || !req.body.user.lastName || !req.body.user.email || !req.body.user.password) {
+        if (!req.body.user.firstName || !req.body.user.lastName || !req.body.user.email || !req.body.user.username || !req.body.user.password) {
             res.status(400)
             res.json({
                 success: false,
@@ -72,6 +72,7 @@ export class UserController extends RestController {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,
+                    username: req.body.user.username,
                     _id: user._id
                 },
                 token: token.token,
@@ -111,6 +112,17 @@ export class UserController extends RestController {
                     success: false,
                     data: {
                         message: 'Invalid user id'
+                    }
+                })
+                return
+            }
+            const token = await Token.findOne({ token: req.headers.token })
+            if (token.userId !== req.params.userId) {
+                res.status(403)
+                res.json({
+                    success: false,
+                    data: {
+                        message: 'You do not have permission to perform this action'
                     }
                 })
                 return
@@ -182,16 +194,6 @@ export class UserController extends RestController {
                 return
             }
             const token = await Token.findOne({ token: req.headers.token })
-            if (!token) {
-                res.status(403)
-                res.json({
-                    success: false,
-                    data: {
-                        message: 'Invalid token'
-                    }
-                })
-                return
-            }
             const user = await User.findOne({ _id: token.userId })
             if (req.params.userId !== user.userId && user.role !== 'admin') {
                 res.status(403)
@@ -266,7 +268,7 @@ export class UserController extends RestController {
     }
     public async deleteOne(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> {
         try {
-            if (!req.params.userId) {
+            if (!req.params.userId || !ObjectId.isValid(req.params.userId)) {
                 res.status(400)
                 res.json({
                     success: false,
@@ -277,16 +279,6 @@ export class UserController extends RestController {
                 return
             }
             const token = await Token.findOne({ token: req.headers.token })
-            if (!token) {
-                res.status(403)
-                res.json({
-                    success: false,
-                    data: {
-                        message: 'Invalid token'
-                    }
-                })
-                return
-            }
             const user = await User.findOne({ _id: token.userId })
             if (req.params.userId !== user.userId && user.role !== 'admin') {
                 res.status(403)

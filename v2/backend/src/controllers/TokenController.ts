@@ -19,8 +19,18 @@ export class TokenController extends RestController {
             return
         }
         const userReadResult = await User.findOne({ username: req.body.username }).select('+password').exec()
+        if (!userReadResult) {
+            res.status(403)
+            res.json({
+                success: false,
+                data: {
+                    message: 'Invalid username/password combination'
+                }
+            })
+            return
+        }
         const isMatch = await argon2.verify(userReadResult.password, req.body.password)
-        if (!userReadResult || !isMatch) {
+        if (!isMatch) {
             res.status(403)
             res.json({
                 success: false,
