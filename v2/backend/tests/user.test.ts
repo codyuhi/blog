@@ -2,8 +2,6 @@ import app from '../src/app'
 import { after, describe } from 'mocha'
 import chai, { expect } from 'chai'
 import chaiHttp from 'chai-http'
-import { exit } from 'process'
-import { User } from '../src/schemas'
 
 chai.should()
 chai.use(chaiHttp)
@@ -207,17 +205,34 @@ describe('In the User API,', () => {
     })
 
     describe('The Get User endpoint', () => {
-        // TODO: Complete test cases for this
         it('Works', () => {
             expect(true).to.be.true
         })
+
+        // TODO: Is able to retrieve all Users
+
+        // TODO: does not retrieve anything if the userId is invalid
+
+        // TODO: does not retrieve anything if the userId can't be found
+
+        // TODO: Successfully retrieves User
     })
 
     describe('The Update User endpoint', () => {
-        // TODO: Complete test cases for this
         it('Works', () => {
             expect(true).to.be.true
         })
+        // TODO: Returns HTTP error if trying to update all Users at once
+
+        // TODO: Does not do anything if is userId is invalid
+
+        // TODO: Does not do anything if there is no user object in the request body
+
+        // TODO: Does not do anything if the token does not match the userId
+
+        // TODO: Does not do anything if the userId cannot be found
+
+        // TODO: Successfully updates User
     })
 
     describe('The Delete User endpoint', () => {
@@ -268,6 +283,12 @@ describe('In the User API,', () => {
                 })
         })
 
+        // TODO: Does not Delete anything if the provided userId does not exist in db
+
+        // TODO: Does not Delete anything if the provided userId is an invalid format
+
+        // TODO: Does not Delete anything if the provided userId does not match the token
+
         it('Deletes a User by ID', async () => {
             await chaiConnection
                 .delete(`/api/user/${testUser._id}`)
@@ -278,6 +299,10 @@ describe('In the User API,', () => {
                     expect(res.body.data.message).to.equal(`Successfully deleted user with id ${testUser._id}`)
                 })
         })
+
+        // TODO: Does not Delete anything if the token is not for an admin
+
+        // TODO: Deletes all Users if token is for an admin
     })
 
     after(async () => {
