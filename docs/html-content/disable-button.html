@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        input,
+        button {
+            margin: 15px;
+        }
+
+        input {
+            padding: 10px;
+            border-style: none none solid none;
+        }
+
+        button {
+            padding: 15px;
+            border: none;
+            background-color: navy;
+            border-radius: 1%;
+            color: white;
+        }
+
+        button:hover {
+            background-color: lightblue;
+            cursor: pointer;
+        }
+
+        .inactive {
+            background-color: lightgray;
+        }
+
+        button.inactive:hover {
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content-container">
+        <div class="input-container">
+            <input class="required" onkeyup="checkInputs()" placeholder="Name" />
+            <input class="required" onkeyup="checkInputs()" placeholder="Email" />
+            <input class="required" onkeyup="checkInputs()" placeholder="Phone Number" />
+        </div>
+        <button id="submit" onclick="yourFunction()" class="inactive">Submit</button>
+    </div>
+    <script>
+        // This function runs when the user releases a keyborad press
+        function checkInputs() {
+            // Set the input fields and button to a variable for future use
+            const required = document.getElementsByClassName('required');
+            const button = document.getElementById('submit');
+
+            // Iterate through all the elements that have the class "required"
+            for (let i = 0; i < required.length; i++) {
+                // If the currently evaluated required input field is empty,
+                if (!required[i] || !required[i].value) {
+                    // Set the button to inactive and exit the function
+                    button.classList.remove('active');
+                    button.classList.add('inactive');
+                    return;
+                }
+            }
+            // If all the required input fields were populated, set the button to active
+            button.classList.remove('inactive');
+            button.classList.add('active');
+        }
+
+        // This function runs when the user clicks the button
+        function yourFunction() {
+            // If the button is inactive, exit without doing anything
+            if (document.getElementById('submit').classList.contains('inactive')) {
+                return;
+            }
+            // After this point in the function,
+            // you can write the code to do whatever you want
+
+            // Do your stuff here
+            console.log('Did stuff');
+        }
+    </script>
+</body>
+
+</html>
