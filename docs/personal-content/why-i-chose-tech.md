@@ -1,0 +1,81 @@
+# My Journey Into a Tech Career
+
+As a reader of my blog, you may be considering a career in technology.  Perhaps you are just getting started in your career, are still in school, or are looking for a change after working in a different industry for many years.  Regardless, you're here - reading a tech blog by a person who perhaps likes writing code a little too much.  I'm glad you're here.
+
+I want to share with you my story and how I got to where I'm at now.  If you somehow arrived here without first reading my introduction, take a look at [my introductory blog article](https://blog.codyuhi.me/intro) where I spell out what my experience is and what I do in tech these days.
+
+## The Foundational High School Days
+
+I was a very different person in high school.  I went to a high school that was not known for its academic prowess.  In fact, when most people familiar with Salt Lake City hear the name of my high school, it does not seem like a place that is particularly notable for anything except maybe gang fights and a hard-hitting football team.
+
+I enjoyed my high school days but was hardly focused on academics.  I considered myself a practitioner of soft-sciences, social studies, writing, and lots of music.  I played sports, was in student government, and considered myself illiterate when it came to computers.  Looking back on that time, it's a wonder how a person so mentally predisposed for a human-oriented field could end up working with machines all day.
+
+When I first thought of what I wanted to do as an adult, I wanted to do something related to law enforcement, military, or social work because I wanted to make a difference in the world and those fields seemed the best way for me to contribute.  I've always been a bit of an idealist and have always had an innate desire to contribute/connect to society.
+
+Despite my normal-sounding background as a kid in the United States, I had insecurities regarding my socio-economic status.  Sometimes things were hard for my family.  My dad was laid off multiple times throughout my formative years which made me insecure about money.  Furthermore, as a son in an immigrant family, I grew up without receiving much of an education around how to best generate, manage, and generally be aware of wealth in the United States.
+
+All of this led to me graduating from High School with a completely naive and uninformed outlook on what I wanted to do with my life and how I would go about making my mark on the world.  I was fortunate to be accepted into an esteemed university in Utah because of all my extra curricular activities and acceptable grades, but I was not on track to find a career in technology at this point of my life.
+
+Soon after I graduated High School, I would find myself leaving the United States for a time that would prove to be very important in my life.
+
+## Life in the Philippines
+
+As a member of the Mormon church growing up, I committed to go on a 2-year religious mission to the Philippines where I would be exposed to a beautiful culture and many amazing people.  While there as a missionary, I had a lot of time to think about what I wanted in my life and how I could accomplish my lifelong goals.  I was exposed to new ways of thinking.  I was taught about how the world works outside of my little bubble in Utah.
+
+I had many individual experiences in the Philippines that shaped my desires for what I wanted to do with my life.  The question of "*what will you do when you get back to the United States*" was constantly looming over my head as I went about my days.  At first, I saw my life as a future police officer, soldier, or social worker being perfectly fine, then I thought I could make a difference as a language interpreter with my newfound Tagalog skills, then I thought I owed it to the universe to become a leader in some capacity because of my leadership positions as a missionary.  In short, I was confused and dreading my return to the United States simply because I did not know what my life would look like when I got back.
+
+Then one day I was in the mission's office working on a report when another missionary's computer started acting up.  The computer was doing the typical crazy stuff that happens when infected by a virus, and no one in the office could make it act right.  That's when we called the church's IT team in Manila to come out to our little office in the province.
+
+The next day, I was sitting at my computer working on another report when the office door opened and three well-dressed individuals came in.  These three did not have a lot to say, but asked to see the computer that was infected.  They were directed to the computer and started doing things I had never seen before except maybe in movies.  They had that cool, mysterious "code" stuff on the screen of the computer and were typing quickly and talking about what they were doing.  I spoke Tagalog, but they were not saying anything I could understand because it was all technical terms and I was so curious.  A few minutes later, they told us the computer was fixed and that the missionary who was using the computer should avoid sketchy-looking websites.  The mission's president asked them to fix the printer too, which had been broken for some time, and they quickly got that working too.  Then as quickly as they arrived, they were out the door.
+
+When they left, I sat in wonder at the prospect of having such skills - to be able to speak the computer's language, to do things that no one else could do.  They routinely fix mysterious things that a person like me had no idea of where to even start.  Simply put, I was in awe at their skill and professionalism.  This was the beginning of my consideration to go into technology.
+
+Later on in my time in the Philippines, a missionary's camera SD card had been corrupted by plugging it into a sketchy computer in an internet cafe.  He was in tears at the thought of losing so many captured memories.  But another Filipino missionary who had paused his education in IT to give his 2-years fixed the SD card with the precious photos intact.  This time, I was able to compose myself and ask how he even started to learn how to do such a thing.  The missionary told me that I should look into studying IT when I got home if I was interested.
+
+That last experience was the one that turned my tech intrigue into action.  As I went about my days, I would see people with tech jobs - fixing broken cell phones and computers, managing the internet cafes, hacking together little technical solutions for the unique Filipino lifestyle.  I felt technology's pull all around me.  I knew I wanted to be part of that curious world.  When the time came that I was close enough to going home that I needed to register for classes at my university, I knew what kinds of classes I would target.
+
+I returned home from the Philippines and soon found myself on the campus of my university - eager, but completely uninformed about what I was about to get myself into.
+
+## Life as a New University Student
+
+I remember my first lecture in a Computer Science class.  The introductory Computer Science course started with an explanation about the climate of Computer Science in today's society.  I got the feeling that I was so out of place because of how smart everyone else seemed.  They all seemed to already know the things that were presented in that lecture - that Computer Science and Software Engineering can be a difficult field to go into, that it requires being able to understand abstract concepts, that there is so much to learn.
+
+At the end of that first lecture, the professor put up on the screen a graph that showed the starting salaries of the university's Computer Science graduates out of college.  The amount of money that was being described was more than I could understand.  I did not know how to fathom what a life could look like with that much money.  For a kid like me who had seen financial struggles all his life, that graph felt alienating.  But it was so exciting to think that if I could just stick with it and pretend to be smart for long enough, maybe I could make that much money one day.  I wanted to imagine a life where I could take care of my family in a way that I had never known, and I was determined to convince myself that I could make it in this field.
+
+After that first lecture, we started installing our development environments and writing code for the first time.  I felt so behind.  Some of my classmates participated in class with the confidence of people who'd been coding for years while I sat in the very back row trying to hide and not be picked on.  I felt very over-my-head trying to understand coding concepts that seemingly had no precedence in natural human life.  I was terrible at math, how was I supposed to be good at programming?  It felt like it took me way longer than everyone else to finish assignments and projects.  And after I finished them, it still felt mysterious to me because I was not retaining the knowledge I used to solve the coding problems.
+
+Despite all the struggling, I still tried to convince myself that I was smart and that I could grow a technical mind.  Some days and some projects were very hard for me.  A few semesters went by and I kept faking it, hoping I would make it eventually.  I was working full-time and got married during this time and it felt like there was never enough time to fulfill my work, family, and school obligations.  I got burnt out.  I failed a few classes.  I failed one class so many times that they told me I had to wait two semesters before I'd be allowed to take the class again.
+
+In the background of all this, my old view of myself kept popping up every once in a while.  Self-doubt would creep in often, saying "you're just not meant to do this. You should do something that is a more natural fit for you."  I was in a rut and something needed to change about how I saw myself.  My past ambitions kept coming up in ways that were undeniable, and I felt drawn to military service.  The rut I was in pushed me further and further down that road to the point that I felt like I needed to join the military for a time just to find out if that past ambition was truly what I was destined to excel in.
+
+There were so many warning signs, so many people who told me it was a bad idea to join, that there were other ways to fulfill my ambitions or succeed, but I was deaf to all those things.  So I signed a contract to join the US Army Reserve with the thought that I needed to do it to prove to myself what path was the right one for me - if I should continue down the tech path or return to what I thought I was meant to do by predisposition.
+
+## Time in the Military
+
+*I am still in the US Army Reserves at the time that this article is being published*
+
+The military was a wake-up call for me.  I had always been the type of person who wanted to be behind the scenes serving rather than being served by others.  I thought that by joining the military, I would have the opportunity to serve others and it would feel right.  I was a bit older than most of the others who were going through basic training with me, but that didn't matter because I was doing this for my country and for myself.
+
+When I first arrived to be in-processed at basic training, I still had my idealistic viewpoints on what my role was as a soldier.  I also felt like upstanding Americans have a duty to serve their country, or atleast that's what the movies and video games I played growing up taught me.  Physically, I was very out of shape and it was difficult for me to endure the mental and bodily hardships inflicted upon me by the training.  I still had my career in mind though - I was enterring the military with a semi-technical role, so I could easily return to a technical career if soldiering wasn't right for me.  I thought I had it all figured out.
+
+During my time in basic training, like in my time in the Philippines, I was forced out of my little Utah bubble and it was interesting seeing a totally different side of the United States.  Basically everywhere in the world that I had ever been was more interesting than Utah, so I was excited to be there.  But I did not agree with many of the viewpoints that I was exposed to by other soldiers and my leadership.  Many things felt problematic to me during my combat and technical training and I realized that the army was not for me.  However, I had made a multi-year commitment to the Army Reserves and I was legally obliged to follow through with my commitment.  This changed the way I viewed my training and I focused my effort on learning as much as I could from the Army's technical schools so I could return to Utah and get back into tech.
+
+Training changed the way I saw myself.  The fallback career as a soldier that I once saw as a possibility would not give me a life that I could be happy with.  Although many people have fulfilling military careers and enjoy their service, I realized that it was definitely not for me.  I realized that my best life could be found only by moving forward with my technical aspirations as a civilian.  This newfound realization fueled a new passion for technology.  My passion for technology was no longer immature and unrefined, but it was molded by exposure to the alternative life that I thought I would have as a soldier.
+
+Even now after I've established my career in tech, I go through my service doing my best to fulfill my duty to my country.  But in my heart, I just want to be writing code and living the life with my family that technology affords me.
+
+## Returning From the Military With Newfound Passion
+
+After almost 6 months away for training, I returned home with a strong resolve to excel in technology.  I had learned enough about technology in my Army training to see computing/networking concepts being applied to real problems and this gave me some maturity in my studies because the "one-days" of applying the things we learned were gone.  I knew that I could apply the things I learn at school that very day, even with my call center job at the time.
+
+I was tired of feeling like I needed to hide in the back of the classroom during lectures.  I had faced much scarier things in my training and I had the practical application experience to know atleast how to contribute to the lecture in some way.  After putting myself out there a bit, I became more excited about technology which helped me put myself out there more and it was a cycle of excitement and reward for engaging myself in tech.
+
+Within the first semester of coming back from my Army training, the old Cody was gone and a new one had taken his place.  I was excelling in classes that I had failed before.  I was travelling to other universities to compete in hackathons and coding competitions (and winning).  I was getting all the extra credit for going above and beyond on the coding projects in class.  I was making automation and web tools for my workplace and getting promotion after promotion.  I was accepting offers for paid internships for engineering roles.  I was contributing to the university's research in computing, healthcare, and crisis informatics.  I ended up graduating from University with a special shoutout from the college director.
+
+Before I knew it, I had become the kind of technical practitioner that I admired all those years ago in the Philippines.  My educational and career-related success skyrocketed.
+
+## Life Today
+
+I'm still in the beginning stages of my career post-graduation.  Despite the poor upbringing that I experienced and the rocky path to where I am now, I have achieved so many things that I thought impossible for myself in the past.  I am making more money at the start of my career than I once thought I could ever make in my life.  I receive acclaim and contribute strongly with my team at work.  I am working on personal projects that allow me to express myself and I love it.
+
+Choosing to enter a career in tech has been life changing and I would recommend it to anyone.  It is definitely not easy to break into.  Sometimes it requires a bit of luck, and it always requires patience and being uncomfortable for some time.
